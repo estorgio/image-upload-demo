@@ -1,0 +1,4 @@
+node_modules/
+scratch/
+Thumbs.db
+*.env
