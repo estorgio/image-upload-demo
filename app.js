@@ -13,8 +13,8 @@ dbConnect();
 const app = express();
 
 app.use(expressSession({
-  name: '_fileuploader',
-  secret: 'dguahweriughaerhn',
+  name: process.env.SESSION_NAME,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
 }));
