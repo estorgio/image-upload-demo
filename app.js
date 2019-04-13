@@ -23,8 +23,14 @@ app.use(expressSession({
 }));
 
 app.set('view engine', 'ejs');
-app.use('/static', express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use('/static/vendor',
+  express.static(path.join(__dirname, 'public', 'vendor'),
+    { immutable: true, maxAge: '1y' }));
+app.use('/static/assets',
+  express.static(path.join(__dirname, 'public', 'assets'),
+    { maxAge: '1d' }));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(flash());
 app.use((req, res, next) => {
