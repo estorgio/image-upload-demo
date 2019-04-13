@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 const flash = require('connect-flash');
+const helmet = require('helmet');
 
 const indexRoutes = require('./routes/index');
 
@@ -11,6 +12,8 @@ const dbConnect = require('./utils/db');
 dbConnect();
 
 const app = express();
+
+app.use(helmet());
 
 app.use(expressSession({
   name: process.env.SESSION_NAME,
