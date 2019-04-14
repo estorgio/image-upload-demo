@@ -3,6 +3,7 @@ const csrf = require('csurf')();
 
 const imageUpload = require('../utils/image-upload');
 const cloudinary = require('../utils/cloudinary');
+const recaptcha = require('../utils/recaptcha');
 
 const Post = require('../models/post');
 
@@ -20,7 +21,8 @@ router.get('/', (req, res, next) => {
 
 router.get('/upload', csrf, (req, res) => {
   const csrfToken = req.csrfToken();
-  res.render('new', { csrfToken });
+  const recaptchaSiteKey = recaptcha.getSiteKey();
+  res.render('new', { csrfToken, recaptchaSiteKey });
 });
 
 router.post('/upload',

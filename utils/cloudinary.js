@@ -5,6 +5,8 @@ const path = require('path');
 const util = require('util');
 const fs = require('fs');
 
+const recaptcha = require('./recaptcha');
+
 require('dotenv').config();
 
 const unlink = util.promisify(fs.unlink);
@@ -18,6 +20,15 @@ cloudinary.config({
 async function cleanup(imageFile) {
   if (imageFile && fs.existsSync(imageFile)) {
     await unlink(imageFile);
+  }
+}
+
+async function validateRecaptcha(token) {
+  const isTokenValid = await recaptcha.verifyToken(token);
+  if (!isTokenValid) {
+    const err = new Error('reCAPTCHA validation failed. Please try again.');
+    err.code = 'RecaptchaFailed';
+    throw err;
   }
 }
 
@@ -80,6 +91,7 @@ function upload(multerMiddleware) {
         `${path.parse(req.file.path).name}_converted.jpg`);
 
       await validateCSRFToken(req, res);
+      await validateRecaptcha(req.body['g-recaptcha-response']);
 
       await minifyImage(originalImage, minifiedImage);
       await unlink(originalImage);
