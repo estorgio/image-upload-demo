@@ -1,4 +1,5 @@
 const express = require('express');
+const csrf = require('csurf')();
 
 const imageUpload = require('../utils/image-upload');
 const cloudinary = require('../utils/cloudinary');
@@ -17,8 +18,9 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get('/upload', (req, res) => {
-  res.render('new');
+router.get('/upload', csrf, (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.render('new', { csrfToken });
 });
 
 router.post('/upload',

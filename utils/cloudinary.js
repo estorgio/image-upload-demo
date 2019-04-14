@@ -1,5 +1,6 @@
 const cloudinary = require('cloudinary');
 const sharp = require('sharp');
+const csrf = require('csurf')();
 const path = require('path');
 const util = require('util');
 const fs = require('fs');
@@ -18,6 +19,18 @@ async function cleanup(imageFile) {
   if (imageFile && fs.existsSync(imageFile)) {
     await unlink(imageFile);
   }
+}
+
+function validateCSRFToken(req, res) {
+  return new Promise((resolve, reject) => {
+    csrf(req, res, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  });
 }
 
 function uploadToCloudinary(imageFile) {
@@ -65,6 +78,8 @@ function upload(multerMiddleware) {
       originalImage = req.file.path;
       minifiedImage = path.join(req.file.destination,
         `${path.parse(req.file.path).name}_converted.jpg`);
+
+      await validateCSRFToken(req, res);
 
       await minifyImage(originalImage, minifiedImage);
       await unlink(originalImage);

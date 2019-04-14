@@ -3,6 +3,18 @@ const path = require('path');
 
 const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
+function randomString(length) {
+  return Array(length)
+    .fill('')
+    .map(() => String.fromCharCode(
+      (Math.floor(Math.random() * 2) === 0
+        ? 65
+        : 97)
+      + (Math.floor(Math.random() * 26))
+    ))
+    .join('');
+}
+
 // Check File Type
 function checkFileType(file, cb) {
   // Allowed ext
@@ -25,7 +37,7 @@ function checkFileType(file, cb) {
 const storage = multer.diskStorage({
   destination: uploadDirectory,
   filename(req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+    cb(null, `${file.fieldname}_${Date.now()}_${randomString(32)}${path.extname(file.originalname)}`);
   },
 });
 
