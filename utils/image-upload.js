@@ -10,7 +10,7 @@ function randomString(length) {
       (Math.floor(Math.random() * 2) === 0
         ? 65
         : 97)
-      + (Math.floor(Math.random() * 26))
+      + (Math.floor(Math.random() * 26)),
     ))
     .join('');
 }

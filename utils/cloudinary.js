@@ -46,7 +46,10 @@ function validateCSRFToken(req, res) {
 
 function uploadToCloudinary(imageFile) {
   return new Promise((resolve, reject) => {
-    cloudinary.v2.uploader.upload(imageFile, (err, result) => {
+    const options = {
+      folder: process.env.CLOUDINARY_FOLDER,
+    };
+    cloudinary.v2.uploader.upload(imageFile, options, (err, result) => {
       if (err) {
         reject(err);
         return;
