@@ -22,4 +22,24 @@ async function verifyToken(token) {
   return response.data.success;
 }
 
-module.exports = { getSiteKey, getSecretKey, verifyToken };
+function validate() {
+  return async (req, res, next) => {
+    const token = req.body['g-recaptcha-response'];
+    const isTokenValid = await verifyToken(token);
+
+    if (isTokenValid) {
+      next();
+    } else {
+      const err = new Error('reCAPTCHA validation failed. Please try again.');
+      err.code = 'RecaptchaFailed';
+      next(err);
+    }
+  };
+}
+
+module.exports = {
+  getSiteKey,
+  getSecretKey,
+  verifyToken,
+  validate,
+};

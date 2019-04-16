@@ -2,8 +2,9 @@ const express = require('express');
 const csrf = require('csurf')();
 
 const imageUpload = require('../utils/image-upload');
-const cloudinary = require('../utils/cloudinary');
 const recaptcha = require('../utils/recaptcha');
+const cloudinary = require('../utils/cloudinary');
+const cleanup = require('../utils/cleanup');
 
 const Post = require('../models/post');
 
@@ -26,9 +27,12 @@ router.get('/upload', csrf, (req, res) => {
 });
 
 router.post('/upload',
-  cloudinary(imageUpload.single('gallery')),
+  imageUpload.single('gallery'),
+  csrf,
+  recaptcha.validate(),
+  cloudinary,
+  cleanup,
   async (req, res, next) => {
-    // const { filename: image } = req.file;
     const { post } = req.body;
     const newPost = {
       ...post,
