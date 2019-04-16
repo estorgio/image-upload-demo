@@ -11,6 +11,7 @@ async function deleteFile(imageFile) {
 
 function cleanupFiles() {
   const cleanup = async (req) => {
+    if (!req.file) return;
     await deleteFile(req.file.path);
     await deleteFile(req.file.minified);
   };
