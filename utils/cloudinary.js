@@ -4,6 +4,8 @@ const path = require('path');
 
 require('dotenv').config();
 
+const cloudinaryFolder = process.env.CLOUDINARY_FOLDER;
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_API_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -13,7 +15,7 @@ cloudinary.config({
 function uploadToCloudinary(imageFile) {
   return new Promise((resolve, reject) => {
     const options = {
-      folder: process.env.CLOUDINARY_FOLDER,
+      folder: cloudinaryFolder,
     };
     cloudinary.v2.uploader.upload(imageFile, options, (err, result) => {
       if (err) {
