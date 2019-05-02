@@ -9,22 +9,23 @@ async function deleteFile(imageFile) {
   }
 }
 
-function cleanupFiles() {
-  const cleanup = async (req) => {
-    if (!req.file) return;
-    await deleteFile(req.file.path);
-    await deleteFile(req.file.minified);
+function cleanupFiles(filePathExtractor) {
+  const cleanup = async (req, res) => {
+    const filePaths = filePathExtractor(req, res);
+
+    const fileDeletionPromiseArr = filePaths.map(filePath => deleteFile(filePath));
+    await Promise.all(fileDeletionPromiseArr);
   };
   return [
     async (req, res, next) => {
-      await cleanup(req);
+      await cleanup(req, res);
       next();
     },
     async (err, req, res, next) => {
-      await cleanup(req);
+      await cleanup(req, res);
       next(err);
     },
   ];
 }
 
-module.exports = cleanupFiles();
+module.exports = cleanupFiles;

@@ -10,6 +10,8 @@ const Post = require('../models/post');
 
 const router = express.Router();
 
+const deleteImageFiles = cleanup(req => [req.file.path, req.file.minified]);
+
 router.get('/', (req, res, next) => {
   Post.find({}, (err, posts) => {
     if (err) {
@@ -31,7 +33,7 @@ router.post('/upload',
   csrf,
   recaptcha.validate(),
   cloudinary,
-  cleanup,
+  deleteImageFiles,
   async (req, res, next) => {
     const { post } = req.body;
     const newPost = {
