@@ -2,8 +2,6 @@ const cloudinary = require('cloudinary');
 const sharp = require('sharp');
 const path = require('path');
 
-require('dotenv').config();
-
 const cloudinaryFolder = process.env.CLOUDINARY_FOLDER;
 
 cloudinary.config({
