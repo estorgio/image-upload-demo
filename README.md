@@ -2,6 +2,8 @@
 
 This Express app is an Image Gallery demo application for demonstrating how to add image upload support.
 
+[Live Demo](https://image-gallery-estorgio.herokuapp.com/)
+
 ## Features
 - File upload using [Multer](https://github.com/expressjs/multer).
 - Resizes images and converts them to JPEG format using [Sharp](https://github.com/lovell/sharp).
