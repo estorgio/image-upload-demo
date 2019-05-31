@@ -3,6 +3,7 @@ const sharp = require('sharp');
 const path = require('path');
 
 const cloudinaryFolder = process.env.CLOUDINARY_FOLDER;
+const volatile = process.env.VOLATILE_MODE.trim().toLowerCase() === 'true';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_API_NAME,
@@ -14,6 +15,7 @@ function uploadToCloudinary(imageFile) {
   return new Promise((resolve, reject) => {
     const options = {
       folder: cloudinaryFolder,
+      tags: volatile ? ['volatile'] : [],
     };
     cloudinary.v2.uploader.upload(imageFile, options, (err, result) => {
       if (err) {
