@@ -1,16 +1,10 @@
 const express = require('express');
 const csrf = require('csurf')();
-
 const imageUpload = require('../utils/image-upload');
 const recaptcha = require('../utils/recaptcha');
-const cloudinary = require('../utils/cloudinary');
-const cleanup = require('../utils/cleanup');
-
 const Post = require('../models/post');
 
 const router = express.Router();
-
-const deleteImageFiles = cleanup(req => [req.file.path, req.file.minified]);
 
 router.get('/', (req, res, next) => {
   Post.find({}, (err, posts) => {
@@ -28,28 +22,25 @@ router.get('/upload', csrf, (req, res) => {
   res.render('new', { csrfToken, recaptchaSiteKey });
 });
 
-router.post('/upload',
+router.post(
+  '/upload',
   imageUpload.single('gallery'),
   csrf,
   recaptcha.validate(),
-  cloudinary,
-  deleteImageFiles,
-  async (req, res, next) => {
-    const { post } = req.body;
-    const newPost = {
-      ...post,
-      image: req.cloudinary.secure_url,
-    };
+  async (req, res) => {
+    const { title, description } = req.body.post;
+    const upload = await req.startUpload();
 
-    Post.create(newPost, (err2) => {
-      if (err2) {
-        next(err2);
-        return;
-      }
-      req.flash('success', 'Image successfully added');
-      res.redirect('/');
+    await Post.create({
+      title,
+      description,
+      image: upload.secure_url,
     });
-  });
+
+    req.flash('success', 'Image successfully added');
+    res.redirect('/');
+  },
+);
 
 // eslint-disable-next-line no-unused-vars
 router.use((err, req, res, next) => {
