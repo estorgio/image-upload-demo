@@ -3,9 +3,9 @@ const multer = require('multer');
 const sharp = require('sharp');
 const cloudinary = require('cloudinary');
 const intoStream = require('into-stream');
+const { isVolatile } = require('../utils/volatile');
 
 const cloudinaryFolder = process.env.CLOUDINARY_FOLDER;
-const volatile = process.env.VOLATILE_MODE.trim().toLowerCase() === 'true';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_API_NAME,
@@ -17,7 +17,7 @@ function uploadToCloudinary(buffer) {
   return new Promise((resolve, reject) => {
     const options = {
       folder: cloudinaryFolder,
-      tags: volatile ? ['volatile'] : [],
+      tags: isVolatile() ? ['volatile'] : [],
       allowed_formats: ['jpeg', 'jpg', 'png', 'gif'],
     };
     const stream = cloudinary.v2.uploader.upload_stream(options, (err, result) => {
