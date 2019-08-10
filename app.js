@@ -7,9 +7,8 @@ const expressSession = require('express-session');
 const flash = require('connect-flash');
 const helmet = require('helmet');
 
-const indexRoutes = require('./routes/index');
-
 const dbConnect = require('./utils/db');
+const indexRoutes = require('./routes/index');
 
 dbConnect();
 
@@ -17,21 +16,25 @@ const app = express();
 
 app.use(helmet());
 
-app.use(expressSession({
-  name: process.env.SESSION_NAME,
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+app.use(
+  expressSession({
+    name: process.env.SESSION_NAME,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 
 app.set('view engine', 'ejs');
 
-app.use('/static/vendor',
-  express.static(path.join(__dirname, 'public', 'vendor'),
-    { immutable: true, maxAge: '1y' }));
-app.use('/static/assets',
-  express.static(path.join(__dirname, 'public', 'assets'),
-    { maxAge: '1d' }));
+app.use(
+  '/static/vendor',
+  express.static(path.join(__dirname, 'public', 'vendor'), { immutable: true, maxAge: '1y' }),
+);
+app.use(
+  '/static/assets',
+  express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1d' }),
+);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(flash());
