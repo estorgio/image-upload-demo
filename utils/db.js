@@ -8,6 +8,7 @@ function connect() {
     .set('useNewUrlParser', true)
     .set('useFindAndModify', false)
     .set('useCreateIndex', true)
+    .set('useUnifiedTopology', true)
     .connect(connectionString)
     .then(() => console.log('Connected to the database'))
     .catch((err) => {
